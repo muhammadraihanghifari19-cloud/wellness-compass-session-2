@@ -23,6 +23,7 @@
 
   const els = {
     start: $("#startBtn"),
+    resume: $("#resumeBtn"),
     restart: $("#restartBtn"),
     prev: $("#prevBtn"),
     next: $("#nextBtn"),
@@ -34,6 +35,30 @@
   };
 
   const STORAGE_KEY = "wellness-compass-v1";
+
+  // In-memory copy of the active result + session, so progress toggles
+  // can be persisted without recomputing.
+  let session = null; // { data, progress: boolean[7], savedAt }
+
+  function loadSession() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.data) return null;
+      // normalise progress to exactly 7 booleans
+      const prog = Array.isArray(parsed.progress) ? parsed.progress : [];
+      parsed.progress = Array.from({ length: 7 }, (_, i) => !!prog[i]);
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveSession() {
+    if (!session) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(session)); } catch (_) {}
+  }
 
   /* ---------------- View switching ---------------- */
   function showView(name) {
@@ -142,13 +167,28 @@
   els.again.addEventListener("click", restart);
   els.print.addEventListener("click", () => window.print());
 
+  // Resume a saved session: recompute result from stored input and render,
+  // restoring the saved 7-day progress.
+  function openSavedResult() {
+    const saved = loadSession();
+    if (!saved) return false;
+    session = saved;
+    const result = analyze(session.data);
+    render(result, session.data);
+    showView("results");
+    return true;
+  }
+  els.resume.addEventListener("click", openSavedResult);
+
   /* ---------------- Submit ---------------- */
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!validateStep(current)) return;
     const data = collect();
     const result = analyze(data);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (_) {}
+    // fresh assessment → reset 7-day progress
+    session = { data, progress: Array(7).fill(false), savedAt: Date.now() };
+    saveSession();
     render(result, data);
     showView("results");
   });
@@ -387,15 +427,19 @@
       prioEl.innerHTML = `<li><span class="dot warn"></span><span>Tidak ada area kritis — fokusmu kini menjaga konsistensi semua kebiasaan baikmu.</span></li>`;
     }
 
-    // plan
+    // plan (with per-day progress checkboxes)
+    const prog = (session && session.progress) || Array(7).fill(false);
     $("#planList").innerHTML = buildPlan(result, data)
-      .map((p) => `
-        <div class="plan-day">
+      .map((p, i) => `
+        <div class="plan-day${prog[i] ? " done" : ""}" data-day="${i}" role="button" tabindex="0"
+             aria-pressed="${prog[i] ? "true" : "false"}" title="Tandai hari ini selesai">
+          <span class="plan-check" aria-hidden="true">✓</span>
           <h4>Hari ${p.day} · ${p.title}</h4>
           <div class="focus">${p.focus}</div>
           <p>${p.task}</p>
         </div>`)
       .join("");
+    updatePlanProgress();
 
     // routine
     $("#routineList").innerHTML = buildRoutine(result, data)
@@ -411,6 +455,30 @@
     todayEl.innerHTML = buildToday(result, data)
       .map((t) => `<li><span class="checkbox">✓</span><span class="txt">${t}</span></li>`)
       .join("");
+  }
+
+  /* ---------------- 7-day plan progress ---------------- */
+  function updatePlanProgress() {
+    if (!session) return;
+    const done = session.progress.filter(Boolean).length;
+    const pct = Math.round((done / 7) * 100);
+    const fill = $("#planProgressFill");
+    const label = $("#planProgressLabel");
+    if (fill) fill.style.width = `${pct}%`;
+    if (label) label.textContent = `${done} / 7 hari selesai`;
+  }
+
+  function toggleDay(dayIndex) {
+    if (!session || dayIndex < 0 || dayIndex > 6) return;
+    session.progress[dayIndex] = !session.progress[dayIndex];
+    saveSession();
+    const card = $(`.plan-day[data-day="${dayIndex}"]`);
+    if (card) {
+      const on = session.progress[dayIndex];
+      card.classList.toggle("done", on);
+      card.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    updatePlanProgress();
   }
 
   /* ---------------- Gauge helpers ---------------- */
@@ -459,7 +527,20 @@
     if (li) li.classList.toggle("done");
   });
 
+  /* ---------------- 7-day plan toggle (bound once) ---------------- */
+  $("#planList").addEventListener("click", (e) => {
+    const card = e.target.closest(".plan-day");
+    if (card) toggleDay(Number(card.dataset.day));
+  });
+  $("#planList").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const card = e.target.closest(".plan-day");
+    if (card) { e.preventDefault(); toggleDay(Number(card.dataset.day)); }
+  });
+
   /* ---------------- Init ---------------- */
   updateStepUI();
+  // Offer "resume" on landing when a prior session exists.
+  if (loadSession()) els.resume.hidden = false;
   showView("landing");
 })();

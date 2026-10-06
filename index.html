@@ -43,10 +43,15 @@
           Jawab beberapa pertanyaan singkat tentang kebiasaan harianmu. Wellness Compass akan menyusun
           snapshot, skor, kekuatan &amp; area prioritas, serta rencana 7 hari yang dipersonalisasi untukmu.
         </p>
-        <button class="btn-primary btn-lg" id="startBtn" type="button">
-          Mulai Assessment
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
+        <div class="hero-cta">
+          <button class="btn-primary btn-lg" id="startBtn" type="button">
+            Mulai Assessment
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button class="btn-ghost btn-lg" id="resumeBtn" type="button" hidden>
+            ↩ Lanjutkan plan terakhir
+          </button>
+        </div>
         <ul class="hero-features">
           <li><span>⏱️</span> ± 2 menit</li>
           <li><span>🔒</span> Data tersimpan di perangkatmu</li>
@@ -220,6 +225,11 @@
 
       <article class="card plan-card">
         <h3>Personalized 7-Day Wellness Plan</h3>
+        <p class="plan-hint">Klik kartu hari untuk menandainya selesai. Progresmu tersimpan otomatis di perangkat ini.</p>
+        <div class="plan-progress">
+          <div class="plan-progress-bar"><span id="planProgressFill"></span></div>
+          <span class="plan-progress-label" id="planProgressLabel">0 / 7 hari selesai</span>
+        </div>
         <div class="plan" id="planList"></div>
       </article>
 

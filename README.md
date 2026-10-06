@@ -17,9 +17,17 @@ mendapatkan rekomendasi kebiasaan yang lebih baik. Pengembangan dari konsep Part
    - Overall wellness score (gauge animasi 0–100) + tier
    - Snapshot metrik per dimensi (8 dimensi berbobot)
    - Kekuatan (strengths) & area prioritas
-   - Personalized 7-day wellness plan
+   - Personalized 7-day wellness plan — tiap hari bisa ditandai selesai,
+     dengan indikator progress keseluruhan (X / 7 hari)
    - Suggested daily routine
    - Action "Mulai Hari Ini" (checklist interaktif)
+
+## Melanjutkan plan
+
+Hasil assessment dan progress 7 hari tersimpan otomatis di perangkat
+(localStorage). Saat kembali ke website, tombol **"Lanjutkan plan terakhir"**
+muncul di halaman awal untuk membuka kembali snapshot & plan terakhir tanpa
+perlu mengisi ulang. Mengisi assessment baru akan memulai progress dari awal.
 
 ## Cara menjalankan
 

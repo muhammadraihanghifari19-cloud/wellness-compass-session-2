@@ -101,6 +101,7 @@ button[hidden] { display: none !important; }
   letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 18px;
 }
 .hero-sub { color: var(--ink-soft); font-size: 1.08rem; max-width: 580px; margin: 0 auto 28px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 .hero-features {
   list-style: none; display: flex; flex-wrap: wrap; gap: 20px;
   justify-content: center; margin-top: 32px; color: var(--ink-soft); font-size: 0.9rem;
@@ -244,14 +245,44 @@ input[type="range"]::-moz-range-thumb {
 
 /* Plan */
 .plan-card { }
+.plan-hint { color: var(--ink-soft); font-size: 0.86rem; margin: -8px 0 14px; }
+
+/* Overall 7-day progress indicator */
+.plan-progress { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.plan-progress-bar { flex: 1; height: 8px; background: rgba(26, 34, 51, 0.08); border-radius: 999px; overflow: hidden; }
+.plan-progress-bar span {
+  display: block; height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  border-radius: 999px; transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.plan-progress-label { font-size: 0.82rem; color: var(--ink-soft); font-weight: 700; white-space: nowrap; }
+
 .plan { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
 .plan-day {
-  background: rgba(255, 255, 255, 0.55); border: 1px solid var(--line);
-  border-radius: var(--radius-sm); padding: 16px;
+  position: relative; background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 16px 16px 16px 44px; cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, transform 0.12s, box-shadow 0.18s;
 }
+.plan-day:hover { border-color: var(--brand-2); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.plan-day:focus-visible { outline: 3px solid rgba(14, 165, 233, 0.4); outline-offset: 2px; }
 .plan-day h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--brand-2); margin-bottom: 8px; }
 .plan-day .focus { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
 .plan-day p { font-size: 0.86rem; color: var(--ink-soft); }
+
+/* Per-day checkbox */
+.plan-check {
+  position: absolute; top: 16px; left: 14px;
+  width: 22px; height: 22px; border-radius: 7px;
+  border: 2px solid var(--brand); background: #fff;
+  display: grid; place-items: center;
+  color: #fff; font-size: 0.8rem; line-height: 1;
+  transition: background 0.15s, border-color 0.15s;
+}
+.plan-day.done { background: rgba(16, 185, 129, 0.1); border-color: var(--brand); }
+.plan-day.done .plan-check { background: var(--brand); border-color: var(--brand); }
+.plan-day.done h4 { color: var(--brand); }
+.plan-day.done .focus { text-decoration: line-through; color: var(--ink-soft); }
 
 /* Routine */
 .routine { list-style: none; counter-reset: r; display: flex; flex-direction: column; gap: 12px; }
