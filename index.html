@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Wellness Compass — pahami kondisi lifestyle-mu dan dapatkan rekomendasi kebiasaan yang lebih baik." />
+  <title>Wellness Compass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <polygon points="16 8 10 10 8 16 14 14 16 8"></polygon>
+        </svg>
+      </span>
+      <div class="brand-text">
+        <strong>Wellness Compass</strong>
+        <small>Arahkan hidupmu ke kebiasaan yang lebih sehat</small>
+      </div>
+    </div>
+    <button class="btn-ghost" id="restartBtn" type="button" hidden>Mulai Ulang</button>
+  </header>
+
+  <main class="app">
+    <!-- ============ LANDING ============ -->
+    <section class="view view-landing is-active" id="view-landing" aria-labelledby="landing-title">
+      <div class="hero">
+        <span class="pill">Personal Wellness Snapshot</span>
+        <h1 id="landing-title">Pahami kondisi lifestyle-mu,<br />temukan arah yang lebih sehat.</h1>
+        <p class="hero-sub">
+          Jawab beberapa pertanyaan singkat tentang kebiasaan harianmu. Wellness Compass akan menyusun
+          snapshot, skor, kekuatan &amp; area prioritas, serta rencana 7 hari yang dipersonalisasi untukmu.
+        </p>
+        <button class="btn-primary btn-lg" id="startBtn" type="button">
+          Mulai Assessment
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <ul class="hero-features">
+          <li><span>⏱️</span> ± 2 menit</li>
+          <li><span>🔒</span> Data tersimpan di perangkatmu</li>
+          <li><span>🎯</span> Rekomendasi yang dapat ditindaklanjuti</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ ASSESSMENT ============ -->
+    <section class="view view-form" id="view-form" aria-labelledby="form-title" hidden>
+      <div class="form-head">
+        <h2 id="form-title">Lifestyle Assessment</h2>
+        <div class="progress">
+          <div class="progress-bar"><span id="progressFill"></span></div>
+          <span class="progress-label" id="progressLabel">Langkah 1 dari 5</span>
+        </div>
+      </div>
+
+      <form id="wellnessForm" novalidate>
+        <!-- Step 1: Tubuh -->
+        <fieldset class="step is-active" data-step="0">
+          <legend><span class="step-icon">📏</span> Tentang Tubuhmu</legend>
+          <div class="grid-2">
+            <label class="field">
+              <span>Tinggi badan (cm)</span>
+              <input type="number" name="height" min="100" max="250" step="1" placeholder="mis. 170" required />
+            </label>
+            <label class="field">
+              <span>Berat badan (kg)</span>
+              <input type="number" name="weight" min="30" max="300" step="0.1" placeholder="mis. 68" required />
+            </label>
+            <label class="field">
+              <span>Usia (tahun) <small class="hint">(opsional)</small></span>
+              <input type="number" name="age" min="18" max="100" step="1" placeholder="mis. 29" />
+            </label>
+            <label class="field">
+              <span>Jenis kelamin <small class="hint">(opsional)</small></span>
+              <select name="gender">
+                <option value="" selected>Pilih…</option>
+                <option value="female">Perempuan</option>
+                <option value="male">Laki-laki</option>
+                <option value="other">Lainnya / tidak ingin menyebut</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Step 2: Tidur & Aktivitas -->
+        <fieldset class="step" data-step="1">
+          <legend><span class="step-icon">🌙</span> Tidur &amp; Aktivitas</legend>
+          <label class="field">
+            <span>Rata-rata jam tidur per malam: <strong class="val" data-for="sleep">7</strong> jam</span>
+            <input type="range" name="sleep" min="3" max="11" step="0.5" value="7" data-live="sleep" />
+          </label>
+          <label class="field">
+            <span>Hari aktif berolahraga per minggu: <strong class="val" data-for="activity">3</strong> hari</span>
+            <input type="range" name="activity" min="0" max="7" step="1" value="3" data-live="activity" />
+          </label>
+          <label class="field">
+            <span>Screen time di luar kerja per hari: <strong class="val" data-for="screen">4</strong> jam</span>
+            <input type="range" name="screen" min="0" max="14" step="0.5" value="4" data-live="screen" />
+          </label>
+        </fieldset>
+
+        <!-- Step 3: Nutrisi -->
+        <fieldset class="step" data-step="2">
+          <legend><span class="step-icon">🥗</span> Hidrasi &amp; Nutrisi</legend>
+          <label class="field">
+            <span>Gelas air per hari (± 250 ml): <strong class="val" data-for="water">6</strong> gelas</span>
+            <input type="range" name="water" min="0" max="16" step="1" value="6" data-live="water" />
+          </label>
+          <label class="field">
+            <span>Porsi buah &amp; sayur per hari: <strong class="val" data-for="produce">3</strong> porsi</span>
+            <input type="range" name="produce" min="0" max="10" step="1" value="3" data-live="produce" />
+          </label>
+        </fieldset>
+
+        <!-- Step 4: Stres & Mental -->
+        <fieldset class="step" data-step="3">
+          <legend><span class="step-icon">🧠</span> Stres &amp; Keseimbangan</legend>
+          <label class="field">
+            <span>Tingkat stres akhir-akhir ini: <strong class="val" data-for="stress">5</strong> / 10</span>
+            <input type="range" name="stress" min="1" max="10" step="1" value="5" data-live="stress" />
+            <small class="hint">1 = sangat tenang · 10 = sangat tertekan</small>
+          </label>
+          <label class="field">
+            <span>Seberapa berenergi kamu di siang hari: <strong class="val" data-for="energy">6</strong> / 10</span>
+            <input type="range" name="energy" min="1" max="10" step="1" value="6" data-live="energy" />
+          </label>
+        </fieldset>
+
+        <!-- Step 5: Goal & Challenge -->
+        <fieldset class="step" data-step="4">
+          <legend><span class="step-icon">🎯</span> Tujuan &amp; Tantangan</legend>
+          <div class="field">
+            <span>Apa wellness goal utamamu?</span>
+            <div class="chips" data-single="goal">
+              <button type="button" class="chip" data-value="energy">Lebih berenergi</button>
+              <button type="button" class="chip" data-value="sleep">Tidur lebih nyenyak</button>
+              <button type="button" class="chip" data-value="weight">Berat badan ideal</button>
+              <button type="button" class="chip" data-value="stress">Kelola stres</button>
+              <button type="button" class="chip" data-value="fitness">Lebih bugar &amp; kuat</button>
+              <button type="button" class="chip" data-value="balance">Hidup lebih seimbang</button>
+            </div>
+            <input type="hidden" name="goal" required />
+          </div>
+          <div class="field">
+            <span>Tantangan terbesar yang sedang kamu hadapi? (boleh pilih beberapa)</span>
+            <div class="chips" data-multi="challenges">
+              <button type="button" class="chip" data-value="time">Kurang waktu</button>
+              <button type="button" class="chip" data-value="motivation">Sulit konsisten</button>
+              <button type="button" class="chip" data-value="stress">Stres tinggi</button>
+              <button type="button" class="chip" data-value="sleep">Susah tidur</button>
+              <button type="button" class="chip" data-value="diet">Pola makan tidak teratur</button>
+              <button type="button" class="chip" data-value="sedentary">Terlalu banyak duduk</button>
+            </div>
+            <input type="hidden" name="challenges" />
+          </div>
+        </fieldset>
+
+        <div class="form-nav">
+          <button type="button" class="btn-ghost" id="prevBtn" hidden>← Kembali</button>
+          <button type="button" class="btn-primary" id="nextBtn">Lanjut →</button>
+          <button type="submit" class="btn-primary" id="submitBtn" hidden>Lihat Hasil ✨</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ RESULTS ============ -->
+    <section class="view view-results" id="view-results" aria-labelledby="results-title" hidden>
+      <div class="results-head">
+        <span class="pill" id="resultTier">Snapshot</span>
+        <h2 id="results-title">Wellness Snapshot-mu</h2>
+        <p id="resultSummary" class="results-sub"></p>
+      </div>
+
+      <div class="results-grid">
+        <!-- Score gauge -->
+        <article class="card score-card">
+          <h3>Overall Wellness Score</h3>
+          <div class="gauge">
+            <svg viewBox="0 0 160 160" class="gauge-svg">
+              <circle class="gauge-track" cx="80" cy="80" r="68"></circle>
+              <circle class="gauge-value" cx="80" cy="80" r="68" id="gaugeValue"></circle>
+            </svg>
+            <div class="gauge-center">
+              <span class="gauge-num" id="scoreNum">0</span>
+              <span class="gauge-max">/100</span>
+            </div>
+          </div>
+          <p class="score-tier" id="scoreTier"></p>
+        </article>
+
+        <!-- Snapshot metrics -->
+        <article class="card snapshot-card">
+          <h3>Snapshot Metrik</h3>
+          <div class="metrics" id="metricsList"></div>
+        </article>
+      </div>
+
+      <div class="results-grid two">
+        <article class="card">
+          <h3><span class="dot good"></span> Kekuatanmu</h3>
+          <ul class="pointlist" id="strengthsList"></ul>
+        </article>
+        <article class="card">
+          <h3><span class="dot warn"></span> Area Prioritas</h3>
+          <ul class="pointlist" id="prioritiesList"></ul>
+        </article>
+      </div>
+
+      <article class="card plan-card">
+        <h3>Personalized 7-Day Wellness Plan</h3>
+        <div class="plan" id="planList"></div>
+      </article>
+
+      <div class="results-grid two">
+        <article class="card">
+          <h3>🕒 Suggested Daily Routine</h3>
+          <ol class="routine" id="routineList"></ol>
+        </article>
+        <article class="card">
+          <h3>✅ Mulai Hari Ini</h3>
+          <ul class="todo" id="todayList"></ul>
+        </article>
+      </div>
+
+      <div class="results-actions">
+        <button class="btn-ghost" id="againBtn" type="button">↺ Isi Ulang Assessment</button>
+        <button class="btn-primary" id="printBtn" type="button">🖨️ Simpan / Cetak</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Wellness Compass memberikan edukasi gaya hidup umum, bukan nasihat medis. Konsultasikan kondisi kesehatan spesifik dengan tenaga profesional.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
